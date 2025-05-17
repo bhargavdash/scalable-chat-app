@@ -110,4 +110,27 @@ router.post('/room', userMiddleware, async(req: CustomRequest, res): Promise<any
     }
 })
 
+router.get('/chats/:roomId', async(req, res): Promise<any> => {
+    try{
+        const roomId = Number(req.params.roomId)
+
+        const messages = await prismaClient.chat.findMany({
+            where:{
+                roomId: roomId
+            },
+            orderBy: {
+                id: "desc"
+            },
+            take: 50
+        })
+        if(!messages){
+            return res.status(400).json({error: "can't fetch messages"})
+        }
+
+        return res.status(200).json({messages})
+    }catch(e){
+        return res.status(400).json({error: e})
+    }
+})
+
 export default router
