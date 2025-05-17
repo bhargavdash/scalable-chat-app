@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "exports": {
-    "./client": "./src/index.ts"
+    "./client": "./dist/index.js"
   },
   "scripts": {
+    "build": "tsc -b",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

@@ -10,6 +10,6 @@ app.get("/healthy", (req, res) => {
 
 app.use("/user", router)
 
-app.listen(3000, () => {
-    console.log("Http Server running on port 3000")
+app.listen(3001, () => {
+    console.log("Http Server running on port 3001")
 })
