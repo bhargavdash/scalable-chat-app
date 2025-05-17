@@ -1,0 +1,29 @@
+{
+  "name": "http-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "tsc -b && node dist/index.js",
+    "dev": "pnpm run build && pnpm run start"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "@repo/db": "workspace:*"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^5.0.1",
+    "@types/express-serve-static-core": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@repo/backend-common": "workspace:*",
+    "@repo/common": "workspace:*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
