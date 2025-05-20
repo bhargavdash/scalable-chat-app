@@ -12,7 +12,7 @@ router.get("/healthy", (req, res) => {
     res.send("user route is healthy")
 })
 
-
+// signup endpoint
 router.post('/signup', async(req, res): Promise<any> => {
     try{
         const parsedData = CreateUserSchema.safeParse(req.body)
@@ -40,7 +40,7 @@ router.post('/signup', async(req, res): Promise<any> => {
     }
 })
 
-
+// signin endpoint
 router.post("/signin", async(req, res): Promise<any> => {
     try{
         const parsedData = SignInSchema.safeParse(req.body)
@@ -80,6 +80,7 @@ router.post("/signin", async(req, res): Promise<any> => {
     }  
 })
 
+// endpoint to create a room
 router.post('/room', userMiddleware, async(req: CustomRequest, res): Promise<any> => {
     try{
         const parsedData = CreateRoomSchema.safeParse(req.body)
@@ -110,7 +111,8 @@ router.post('/room', userMiddleware, async(req: CustomRequest, res): Promise<any
     }
 })
 
-router.get('/chats/:roomId', async(req, res): Promise<any> => {
+// endpoint to get the last 50 chats from a room 
+router.get('/chats/:roomId',userMiddleware, async(req, res): Promise<any> => {
     try{
         const roomId = Number(req.params.roomId)
 
@@ -132,5 +134,26 @@ router.get('/chats/:roomId', async(req, res): Promise<any> => {
         return res.status(400).json({error: e})
     }
 })
+
+// endpoint to return roomId , given the slug
+router.get('/room/:slug', async(req, res): Promise<any> => {
+    try{
+        const slug = req.params.slug
+
+        const room = await prismaClient.room.findFirst({
+            where:{
+                slug
+            }
+        })
+        if(!room){
+            return res.status(400).json({error: "room not found"})
+        }
+
+        return res.status(200).json({id: room.id})
+    }catch(e){
+        return res.status(400).json({error: e})
+    }
+})
+
 
 export default router
