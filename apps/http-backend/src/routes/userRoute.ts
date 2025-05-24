@@ -91,6 +91,8 @@ router.post('/room', userMiddleware, async(req: CustomRequest, res): Promise<any
  
         const userId = req.userId as string;
 
+        console.log("room name: ", parsedData.data.name)
+
         try{
             const room = await prismaClient.room.create({
                 data: {
@@ -112,7 +114,7 @@ router.post('/room', userMiddleware, async(req: CustomRequest, res): Promise<any
 })
 
 // endpoint to get the last 50 chats from a room 
-router.get('/chats/:roomId',userMiddleware, async(req, res): Promise<any> => {
+router.get('/chats/:roomId', async(req, res): Promise<any> => {
     try{
         const roomId = Number(req.params.roomId)
 
@@ -121,15 +123,14 @@ router.get('/chats/:roomId',userMiddleware, async(req, res): Promise<any> => {
                 roomId: roomId
             },
             orderBy: {
-                id: "desc"
+                id: "asc"
             },
             take: 50
         })
         if(!messages){
             return res.status(400).json({error: "can't fetch messages"})
         }
-
-        return res.status(200).json({messages})
+        return res.status(200).json({chats: messages})
     }catch(e){
         return res.status(400).json({error: e})
     }

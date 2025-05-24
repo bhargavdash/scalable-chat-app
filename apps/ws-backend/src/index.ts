@@ -55,7 +55,10 @@ wss.on('connection', function connection(ws: WebSocket, request){
         const token = queryParams.get("token") ?? ""
 
         if(!token){
-            ws.send("Token not found")
+            ws.send(JSON.stringify({
+                type: "message",
+                payload: "Token not found"
+            }))
             ws.close()
             return;
         }
@@ -63,7 +66,10 @@ wss.on('connection', function connection(ws: WebSocket, request){
         const decodedToken = jwt.verify(token, JWT_SECRET) as {userId: string}
 
         if(!decodedToken || !decodedToken.userId){
-            ws.send("Access denied")
+            ws.send(JSON.stringify({
+                type: "message",
+                payload: "Access denied"
+            }))
             ws.close()
             return;
         }
@@ -90,13 +96,19 @@ wss.on('connection', function connection(ws: WebSocket, request){
                         })
 
                         if(!room){
-                            ws.send("This room does not exist");
+                            ws.send(JSON.stringify({
+                                type: "message",
+                                payload: "This room does not exist"
+                            }))
                             return;
                         }
 
                         const user = localStore.getUser(ws);
                         if(user?.rooms.includes(roomId)){
-                            ws.send("You have already joined this room");
+                            ws.send(JSON.stringify({
+                                type: "message",
+                                payload: "You have already joined this room"
+                            }))
                             return;
                         }
                         
@@ -105,8 +117,11 @@ wss.on('connection', function connection(ws: WebSocket, request){
 
                         // publish to redis for global state
                         redisManager.publishUserJoinedRoom(userId, roomId);
-                        
-                        ws.send(`You have joined room: ${roomId}`)
+
+                        ws.send(JSON.stringify({
+                                type: "message",
+                                payload: `You have joined room: ${roomId}`
+                            }))
                         break;
                     }
 
@@ -120,7 +135,10 @@ wss.on('connection', function connection(ws: WebSocket, request){
                         // publish to redis for global state
                         redisManager.publishUserLeftRoom(userId, roomId);
 
-                        ws.send(`You have left room: ${roomId}`)
+                        ws.send(JSON.stringify({
+                                type: "message",
+                                payload: `You have left room: ${roomId}`
+                            }))
                         break;
                     }
 
@@ -131,7 +149,10 @@ wss.on('connection', function connection(ws: WebSocket, request){
                         // check if user is in the room
                         const user = localStore.getUser(ws);
                         if(!user || !user.rooms.includes(roomId)){
-                            ws.send("You are not in this room");
+                            ws.send(JSON.stringify({
+                                type: "message",
+                                payload: "You are not in this room"
+                            }))
                             return;
                         }
 
@@ -164,7 +185,10 @@ wss.on('connection', function connection(ws: WebSocket, request){
                 }
             } catch(err){
                 console.error("Error processing message: ", err);
-                ws.send("Error processing your message");
+                ws.send(JSON.stringify({
+                    type: "message",
+                    payload: "Error processing your message"
+                }))
             }     
         });
 
