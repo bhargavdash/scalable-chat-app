@@ -121,6 +121,10 @@ export function ChatRoomClient({chats, id} : {
             </div>
         </div>
         <div onClick={() => {
+            socket?.send(JSON.stringify({
+                type: 'leave_room',
+                roomId: id
+            }))
             router.push('/lobby')
         }}
         className="bg-red-500 text-black hover:cursor-pointer hover:bg-red-400 p-2 flex justify-center items-center rounded-md mt-5 ml-auto mr-20">Leave Room</div>
